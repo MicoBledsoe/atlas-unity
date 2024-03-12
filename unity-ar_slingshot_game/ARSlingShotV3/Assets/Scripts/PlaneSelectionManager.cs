@@ -9,6 +9,7 @@ public class PlaneSelectionManager : MonoBehaviour
     public ARRaycastManager raycastManager; // the ARRaycastManager component
     public ARPlaneManager planeManager; //the ARPlaneManager component
     public GameObject startButton; // UI button GameObject
+    public GameObject OGTARGET;
 
     private static bool planeSelected = false; // Static boolean to keep track if a plane has been selected
 
@@ -32,6 +33,9 @@ public class PlaneSelectionManager : MonoBehaviour
                     ARPlane selectedPlane = hit.trackable as ARPlane; // Cast the hit trackable to ARPlane
 
                     planeSelected = true; // Mark as selected
+
+                    Instantiate(OGTARGET, hit.pose.position, Quaternion.identity);
+
 
                     foreach (var plane in planeManager.trackables) // Iterate through all trackable planes
                     {
