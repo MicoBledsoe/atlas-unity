@@ -1,27 +1,34 @@
 using UnityEngine;
-using System.Collections.Generic;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
-//my directives above^
+//My directives above
 
 public class GameManager : MonoBehaviour
 {
-    public GameObject targetPrefab; // the prefab for spawning targets in the inspector
-    public int numberOfTargets = 5; // the number of targets to spawn
-    public static ARPlane selectedPlane; // Static variable to hold the selected plane
+    public GameObject targetPrefab; 
+    public int numberOfTargets = 5; 
 
-    // Method to spawn targets on the selected AR plane
-    public void SpawnTargets()
+    // This method now takes an ARPlane parameter to directly use the selected plane
+    public void SpawnTargetsOnSelectedPlane(ARPlane selectedPlane)
     {
-        if (selectedPlane == null) return; // Exit the method if no plane is selected
-
-        for (int i = 0; i < numberOfTargets; i++) // Loop to instantiate the specified number of targets
+        if (selectedPlane == null)
         {
-            // Simplified instantiation position
-            Vector3 position = selectedPlane.transform.position; 
-            
-            // Instantiate the targetPrefab at the position on the selected plane with default rotation and as a child of the plane
-            Instantiate(targetPrefab, position, Quaternion.identity, selectedPlane.transform);
+            Debug.Log("No plane selected");
+            return;
+        }
+
+        Vector2 planeSize = selectedPlane.size;
+        // Iterate over the number of targets to spawn
+        for (int i = 0; i < numberOfTargets; i++)
+        {
+            // Calculate local positions within the plane bounds
+            float localX = Random.Range(-planeSize.x / 2, planeSize.x / 2);
+            float localZ = Random.Range(-planeSize.y / 2, planeSize.y / 2);
+            Vector3 localPosition = new Vector3(localX, 0.1f, localZ); // Adding a slight Y offset to ensure visibility
+            Vector3 worldPosition = selectedPlane.transform.TransformPoint(localPosition);
+
+            // Instantiate the target at the calculated world space position
+            Instantiate(targetPrefab, worldPosition, Quaternion.identity);
         }
     }
 }

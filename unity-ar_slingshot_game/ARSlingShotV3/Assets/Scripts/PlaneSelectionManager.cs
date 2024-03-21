@@ -2,51 +2,52 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
-//my directives above^
+//My directives above
 
-public class PlaneSelectionManager : MonoBehaviour 
+public class PlaneSelectionManager : MonoBehaviour
 {
-    public ARRaycastManager raycastManager; // the ARRaycastManager component
-    public ARPlaneManager planeManager; //the ARPlaneManager component
-    public GameObject startButton; // UI button GameObject
-    public GameObject OGTARGET;
-
-    private static bool planeSelected = false; // Static boolean to keep track if a plane has been selected
-
-    void Awake() // Awake is called when the script instance is being loaded
+    public ARRaycastManager raycastManager;
+    public ARPlaneManager planeManager;
+    public GameObject startButton;
+    public GameManager gameManager; 
+    
+    public void HideStartButton()
     {
-        startButton.SetActive(false); // Initially hide the start button
+        startButton.SetActive(false);
+    }
+    
+    private ARPlane selectedPlane = null;
+
+    void Awake()
+    {
+        startButton.SetActive(false); // Initially hides the start button
     }
 
-    void Update() // Update is called once per frame
+    void Update()
     {
-        if (!planeSelected && Input.touchCount > 0) // Checking to see if no plane is selected and there is at least one touch
+        if (selectedPlane == null && Input.touchCount > 0)
         {
-            Touch touch = Input.GetTouch(0); // Get the first touch
-            if (touch.phase == TouchPhase.Began) // Check if the touch phase is at the beginning
+            Touch touch = Input.GetTouch(0);
+            if (touch.phase == TouchPhase.Began)
             {
-                List<ARRaycastHit> hits = new List<ARRaycastHit>(); // Create a new list to store raycast hits
-                // Perform a raycast from the touch position and add hits to the list
+                List<ARRaycastHit> hits = new List<ARRaycastHit>();
                 if (raycastManager.Raycast(touch.position, hits, TrackableType.PlaneWithinPolygon))
                 {
-                    ARRaycastHit hit = hits[0]; // Assuming the first hit is the desired one
-                    ARPlane selectedPlane = hit.trackable as ARPlane; // Cast the hit trackable to ARPlane
+                    ARRaycastHit hit = hits[0];
+                    selectedPlane = hit.trackable as ARPlane;
 
-                    planeSelected = true; // Mark as selected
+                    // Optionally, activate the start button
+                    startButton.SetActive(true);
 
-                    Instantiate(OGTARGET, hit.pose.position, Quaternion.identity);
-
-
-                    foreach (var plane in planeManager.trackables) // Iterate through all trackable planes
+                    // Disable the ARPlaneManager and the visual representation of all planes
+                    planeManager.enabled = false;
+                    foreach (ARPlane plane in planeManager.trackables)
                     {
-                        if (plane != selectedPlane) // Check if the current plane is not the selected plane
-                        {
-                            plane.gameObject.SetActive(false); // Disable the plane's GameObject
-                            // Destroy(plane.gameObject); // Alternatively, to destroy the plane
-                        }
+                        plane.gameObject.SetActive(false);
                     }
 
-                    startButton.SetActive(true); // Show the start button
+                    // Call the GameManager to spawn targets on the selected plane
+                    gameManager.SpawnTargetsOnSelectedPlane(selectedPlane);
                 }
             }
         }
