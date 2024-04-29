@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>FGS WebAR</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script>
+      <!-- THIS MY EVENT LISTENER FOR THE URL-->
+      AFRAME.registerComponent('open-url', {
+        schema: {url: {default: ''}},
+        init: function() {
+          this.el.addEventListener('click', () => {
+            window.location.href = this.data.url;
+            event.stopPropagation();
+          });
+        }
+      });
+    </script>
+</head>
+<body>
+  <!--  THIS IS MY AIM RETICLE FOR THE CURSOR -->
+    <a-scene background="color: #00D4FF">
+        <!-- Camera setup allowing for look around controls -->
+        <a-camera look-controls enabled="true" position="0 1.6 0">
+            <a-cursor color="red" fuse=false ></a-cursor>
+        </a-camera>
+      
+        <!-- Softly Positioned Directional Lights -->
+        <a-light type="directional" color="#FFFFFF" intensity="0.3" position="-1 1 1"></a-light>
+        <a-light type="directional" color="#FFFFFF" intensity="0.2" position="1 1 -1"></a-light> <!-- Softly Positioned Directional Lights -->
+        <a-light type="directional" color="#FFFFFF" intensity="0.2" position="8 1 -3"></a-light>
+      
+      <!-- Directional Lights strategically placed around the car -->
+      <!-- Front -->
+      <a-light type="directional" color="#FFFFFF" intensity="0.1" position="0 1 -5"></a-light>
+      <!-- Back -->
+      <a-light type="directional" color="#FFFFFF" intensity="0.1" position="0 1 5"></a-light>
+      <!-- Left -->
+      <a-light type="directional" color="#FFFFFF" intensity="0.1" position="-5 2 0"></a-light>
+      <!-- Right -->
+      <a-light type="directional" color="#FFFFFF" intensity="0.1" position="5 3 0"></a-light>
+      <!-- Top -->
+      <a-light type="directional" color="#FFFFFF" intensity="0.1" position="0 5 0"></a-light>
+      
+
+        <!--FGS GITHUB BUILDING BOX-->
+        <a-box position="-5 0.5 -10" rotation="0 45 0" color="#6e5494" depth="2" height="10" width="2"
+               open-url="url: https://github.com/MicoBledsoe">
+          
+          <!-- MY GITHUB LOGO -->
+            <a-image src="https://cdn.glitch.global/21f5d3be-2b79-454c-a09f-6716f3648d13/GithubLogo.png?v=1711660520651"
+                     position="0 4 1.1" rotation="0 0 0" width="2" height="2">
+            </a-image>
+        </a-box>
+      
+      <a-box position="-4 0.5 -18" rotation="0 45 0" color="#6e5494" depth="2" height="10" width="2"></a-box>
+
+        <!-- A model of FGS CAR, using my CDN path-->
+        <a-entity gltf-model="https://cdn.glitch.me/21f5d3be-2b79-454c-a09f-6716f3648d13/CAR2.glb?v=1711658005131" 
+                  position="5 0.5 -10" scale="0.4 0.4 0.4"></a-entity>
+
+      <!--- HOUSE MODEL --->
+      <a-entity gltf-model="https://cdn.glitch.global/21f5d3be-2b79-454c-a09f-6716f3648d13/BUIDLING.glb?v=1712362568650" 
+                  position="-16 0.5 5" scale="1 1 1" rotation= "0 110 0"></a-entity>
+      
+      <!--LINKEDIN BUILDING-->
+        <a-box position="-8 0.5 -8" rotation="0 45 0" color="#0096FF" depth="3" height="10" width="2"
+              open-url="url: https://www.linkedin.com/in/micobledsoe/">
+          
+          <!--MY LINKEDIN LOGO-->
+          <a-image src="https://cdn.glitch.global/21f5d3be-2b79-454c-a09f-6716f3648d13/LinkedInLogo.png?v=1711993614951"
+                    position="0 4 1.6" rotation="0 0 0" width="2" height="2">
+          </a-image>
+        <a-box>
+          
+        <!-- X BUILDING -->
+        <a-box position="-6 0.5 2" rotation="0 45 0" color="#CC3333" depth="3" height="10" width="2"
+              open-url="url: https://twitter.com/MicoBledsoe">
+          
+        <!--MY X LOGO-->
+          <a-image src="https://cdn.glitch.global/21f5d3be-2b79-454c-a09f-6716f3648d13/TwitterLogo.png?v=1711993531182"
+                    position="0 4 1.6" rotation="0 0 0" width="2" height="2">
+          </a-image>
+        </a-box>
+      <!-- My Floor Where the FGS MODEL AND EVERYTHING GOES -->
+        <a-plane position="0 0 -10" rotation="-90 0 0" width="50" height="50" color="#7A2A36"></a-plane>
+    </a-scene>
+</body>
+</html>
